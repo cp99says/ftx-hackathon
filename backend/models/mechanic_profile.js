@@ -8,6 +8,7 @@ const schema = mongoose.Schema({
     mech_long: { type: Number },
   },
   mechanic_id: { type: String },
+  location: { type: String },
   active_requests: [
     {
       name: { type: String },
@@ -28,4 +29,4 @@ const schema = mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Mechanic", schema);
+module.exports = mongoose.model("Mechanic Profile", schema);
