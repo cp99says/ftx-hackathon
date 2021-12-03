@@ -17,6 +17,9 @@ mongoose.connect(conn_string).then(
     console.log(err);
   }
 );
+app.get("/", (req, res) => {
+  res.send("ok");
+});
 app.use(cors());
 app.use("/api", api);
 const PORT = 5000;
