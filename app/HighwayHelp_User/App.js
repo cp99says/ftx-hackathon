@@ -3,11 +3,12 @@ import { Text, View, SafeAreaView, Image, Linking, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home'
-
+import { NativeModules, PermissionsAndroid, Platform } from 'react-native'
 
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  let authorized = PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_SMS);
 
   useEffect(() => {
     //SplashScreen.hide();
