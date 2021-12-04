@@ -15,6 +15,10 @@ const schema = mongoose.Schema({
       phone: { type: String },
       vehicle_type: [{ type: String }],
       location: { type: String },
+      coordinates: {
+        user_lat: { type: Number },
+        user_long: { type: Number },
+      },
       wheelsAndTyres: {
         request_type: [{ type: String }],
       },
