@@ -87,6 +87,10 @@ import React, { useState, useEffect } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import store from '../store/store';
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import SendSMS from 'react-native-sms'
 
 const items = [
     { id: 1, name: 'Puncture' },
@@ -106,7 +110,8 @@ export default Service = ({ navigation }) => {
     const [selectedItemsWheels, setSelectedItemsWheels] = useState([]);
     const [selectedItemsEngine, setSelectedItemsEngine] = useState([]);
     const [selecteditemsFuel, setSelectedItemsFuel] = useState([]);
-
+    const [lat, setLat] = useState([]);
+    const [long, setLong] = useState([]);
 
     const onSelectedItemsChange = (selectedItems) => {
         setSelectedItemsWheels(selectedItems);
@@ -117,6 +122,59 @@ export default Service = ({ navigation }) => {
     }
     const onSelectFuel = (selectedItems) => {
         setSelectedItemsFuel(selectedItems);
+    }
+
+
+    function submit() {
+        console.log(selectedItemsEngine, selectedItemsWheels, selecteditemsFuel)
+        var select = selectedItemsEngine + ',' + selectedItemsWheels + ',' + selecteditemsFuel;
+        console.log(select);
+        store.setSelectedServices(select)
+        Geolocation.getCurrentPosition(data => {
+            console.log("hettttt", data)
+            setLat(data.coords.latitude)
+            setLong(data.coords.longitude)
+        })
+
+        axios.patch('https://ftxapi.imswarnabha.in/api/request_service', {
+            mechanic_id: "27d1ba1135",
+            active_requests: [
+                {
+                    name: "name",
+                    phone: "78",
+                    vehicle_type: ["car"],
+                    location: "near petrol pump",
+                    coordinates: {
+                        mech_lat: lat,
+                        mech_long: long
+                    },
+                    wheelsAndTyres: {
+                        request_type: selectedItemsWheels
+                    },
+                    engine: {
+                        request_type: selectedItemsEngine,
+                    },
+                    fuel: {
+                        request_type: selecteditemsFuel,
+                    },
+                }
+            ]
+        }).then((val) => {
+            console.log(val.data)
+        }).catch((err) => {
+            console.log(err)
+        }).finally((val1) => {
+            SendSMS.send({
+                body: `latitude:${lat} longitude:${long} services=${select}`,
+                recipients: ['8102644366', '7891497854'],
+                successTypes: ['sent', 'queued'],
+                allowAndroidSendWithoutReadPermission: true,
+            }, (completed, cancelled, error) => {
+
+                console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+
+            });
+        })
     }
 
     useEffect(() => {
@@ -140,7 +198,7 @@ export default Service = ({ navigation }) => {
                 <MultiSelect
 
                     items={items}
-                    uniqueKey="id"
+                    uniqueKey="name"
                     onSelectedItemsChange={onSelectedItemsChange}
                     selectedItems={selectedItemsWheels}
                     selectText="Select problem"
@@ -166,7 +224,7 @@ export default Service = ({ navigation }) => {
                 </View>
                 <MultiSelect
                     items={itemsEngine}
-                    uniqueKey='id'
+                    uniqueKey='name'
                     onSelectedItemsChange={onSelectEngine}
                     selectedItems={selectedItemsEngine}
                     selectText="Select problem"
@@ -192,7 +250,7 @@ export default Service = ({ navigation }) => {
                 </View>
                 <MultiSelect
                     items={itemsFuel}
-                    uniqueKey='id'
+                    uniqueKey='name'
                     onSelectedItemsChange={onSelectFuel}
                     selectedItems={selecteditemsFuel}
                     selectText="Select problem"
@@ -211,7 +269,7 @@ export default Service = ({ navigation }) => {
                 />
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('Service')
+                        submit()
                     }}
                     style={{ borderRadius: 10, marginTop: 30, marginBottom: 100, alignSelf: 'center', backgroundColor: '#00649f', width: wp("80%"), height: hp("8%"), justifyContent: 'center' }}>
                     <Text style={{ textAlign: 'center', color: '#fff', fontFamily: 'Comfortaa-Bold', fontSize: 18 }}>
