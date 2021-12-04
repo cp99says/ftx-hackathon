@@ -13,7 +13,7 @@ const schema = mongoose.Schema({
     {
       name: { type: String },
       phone: { type: String },
-      service_type: [{ type: String }],
+      vehicle_type: [{ type: String }],
       location: { type: String },
       wheelsAndTyres: {
         request_type: [{ type: String }],

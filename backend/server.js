@@ -8,7 +8,7 @@ const conn_string =
   "mongodb+srv://cp99says:cp99says@cluster0.ethe1.mongodb.net/HighwayHelp?retryWrites=true&w=majority";
 
 const local_conn_string = "mongodb://localhost:27017/HighwayHelp";
-mongoose.connect(conn_string).then(
+mongoose.connect(local_conn_string).then(
   () => {
     console.log(`connected to mongoDB compass`);
   },
