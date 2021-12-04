@@ -33,7 +33,7 @@ export function TicketCard(props) {
                 successTypes: ["sent", "queued"],
                 allowAndroidSendWithoutReadPermission: true,
             },
-            (completed, cancelled, error) => {
+            (completed, error) => {
                 setActive(false);
             }
         );
