@@ -171,7 +171,7 @@ const HomeScreen = ({navigation}) => {
                 </Text>
                 <FlatList
                     data={data}
-                    contentContainerStyle={{paddingBottom: "20%"}}
+                    contentContainerStyle={{paddingBottom: "25%"}}
                     renderItem={renderItem}
                     keyExtractor={e => e.id}
                 />
