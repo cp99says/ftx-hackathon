@@ -2,6 +2,7 @@ import {makeAutoObservable, observable} from "mobx";
 
 class Store {
     email = "";
+    regUserDetails = "";
     usernameVal = "";
     teacherIdVal = "";
     authTokenVal = 0;
@@ -11,6 +12,9 @@ class Store {
     }
     setAuthTokenVal(val) {
         this.authTokenVal = val;
+    }
+    setRegUserDetails(val) {
+        this.regUserDetails = val;
     }
     setEmail(val) {
         this.email = val;
