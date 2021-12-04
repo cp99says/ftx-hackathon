@@ -8,7 +8,7 @@ import { height, width } from '../const/const';
 
 
 
-export default Test = ({ navigation }) => {
+export default Home = ({ navigation }) => {
 
     let data = [{ image: `https://source.unsplash.com/random/300x200?sig=${Math.random()}`, name: 'BMW', desc: 'abc def', _id: 1 },
     { image: `https://source.unsplash.com/random/300x200?sig=${Math.random()}`, name: 'BMW', desc: 'abc def', _id: 2 },
@@ -21,7 +21,7 @@ export default Test = ({ navigation }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image
                     style={{
-                        height: wp("20%"), width: wp("20%"), borderRadius: wp("20%"), marginTop: width / 10, margin: width / 20
+                        height: wp("20%"), width: wp("20%"), borderRadius: wp("20%"), margin: width / 20
                     }}
                     source={{ uri: `https://source.unsplash.com/random/300x200?sig=${Math.random()}` }} />
                 <View style={{ flexDirection: 'column' }}>
@@ -34,7 +34,7 @@ export default Test = ({ navigation }) => {
                 data={data}
                 renderItem={({ item }) => (<View>
                     <Image
-                        style={{ width: width - 70, height: width - 100, borderRadius: 10, marginLeft: 20, }}
+                        style={{ width: width - 70, height: hp("40%"), borderRadius: 10, marginLeft: 20, }}
                         source={{ uri: item.image }} />
                     <Text
                         style={{ fontFamily: 'Comfortaa-Regular', color: '#000', fontSize: 18, marginTop: 10, marginLeft: 25 }}>{item.name}
@@ -44,7 +44,7 @@ export default Test = ({ navigation }) => {
                 </View>)}
                 keyExtractor={item => item._id}
                 showsHorizontalScrollIndicator={false} />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 30 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                 <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', height: wp("20%"), width: wp("20%"), backgroundColor: '#ccf3f9', borderRadius: 11 }}>
                     <Image style={{ height: 50, width: 50 }} source={require('../assets/clock.png')} />
                 </TouchableOpacity>
@@ -55,7 +55,11 @@ export default Test = ({ navigation }) => {
                     <Image style={{ height: 50, width: 50 }} source={require('../assets/Group16.png')} />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{ borderRadius: 10, marginTop: 50, marginBottom: 100, alignSelf: 'center', backgroundColor: '#ff3f3f', width: wp("80%"), height: hp("8%"), justifyContent: 'center' }}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Service')
+                }}
+                style={{ borderRadius: 10, marginTop: 30, marginBottom: 100, alignSelf: 'center', backgroundColor: '#ff3f3f', width: wp("80%"), height: hp("8%"), justifyContent: 'center' }}>
                 <Text style={{ textAlign: 'center', color: '#fff', fontFamily: 'Comfortaa-Bold', fontSize: 18 }}>
                     NEED IMMEDIATE HELP ?
                 </Text>

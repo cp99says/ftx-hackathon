@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home'
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native'
+import Service from './src/screens/Service';
 
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Service" component={Service} />
       </Stack.Navigator>
     </NavigationContainer>
   );
