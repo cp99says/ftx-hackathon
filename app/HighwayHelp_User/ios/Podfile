@@ -12,6 +12,10 @@ target 'HighwayHelp_User' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-sms', :path => '../node_modules/react-native-sms'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'HighwayHelp_UserTests' do
     inherit! :complete
     # Pods for testing
