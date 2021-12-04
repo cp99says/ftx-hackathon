@@ -91,6 +91,7 @@ import store from '../store/store';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import SendSMS from 'react-native-sms'
+import Home from './Home';
 
 const items = [
     { id: 1, name: 'Puncture' },
@@ -130,18 +131,14 @@ export default Service = ({ navigation }) => {
         var select = selectedItemsEngine + ',' + selectedItemsWheels + ',' + selecteditemsFuel;
         console.log(select);
         store.setSelectedServices(select)
-        Geolocation.getCurrentPosition(data => {
-            console.log("hettttt", data)
-            setLat(data.coords.latitude)
-            setLong(data.coords.longitude)
-        })
+
 
         axios.patch('https://ftxapi.imswarnabha.in/api/request_service', {
-            mechanic_id: "27d1ba1135",
+            mechanic_id: "2086e1ebce",
             active_requests: [
                 {
-                    name: "name",
-                    phone: "78",
+                    name: "Raghav",
+                    phone: "8102644366",
                     vehicle_type: ["car"],
                     location: "near petrol pump",
                     coordinates: {
@@ -161,12 +158,15 @@ export default Service = ({ navigation }) => {
             ]
         }).then((val) => {
             console.log(val.data)
+            alert(val.data.message)
         }).catch((err) => {
             console.log(err)
+            alert(err)
         }).finally((val1) => {
+            navigation.navigate(Home)
             SendSMS.send({
-                body: `latitude:${lat} longitude:${long} services=${select}`,
-                recipients: ['8102644366', '7891497854'],
+                body: `Raghav needs yous services find the details attached. location:https://www.google.com/maps/dir/?api=1&&destination=${lat},${long} services=${select} user phone number:8102644366`,
+                recipients: ['8102644366', '7891497854', '8802216901'],
                 successTypes: ['sent', 'queued'],
                 allowAndroidSendWithoutReadPermission: true,
             }, (completed, cancelled, error) => {
@@ -178,7 +178,11 @@ export default Service = ({ navigation }) => {
     }
 
     useEffect(() => {
-
+        Geolocation.getCurrentPosition(data => {
+            console.log("hettttt", data)
+            setLat(data.coords.latitude)
+            setLong(data.coords.longitude)
+        })
     }, []);
 
     return (
