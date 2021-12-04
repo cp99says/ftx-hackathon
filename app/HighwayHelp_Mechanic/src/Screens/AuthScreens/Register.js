@@ -7,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     StyleSheet,
     Dimensions,
+    PermissionsAndroid,
     FlatList,
     Button,
     TextInput,
@@ -19,51 +20,145 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import {API_CALL} from "../../Functions/ApiFunctions";
 import {Input, Loader} from "../../Components/Components";
 import {FocusAwareStatusBar, showNotification, storeData} from "../../Functions/AppFunctions";
+import GetLocation from "react-native-get-location";
 import Store from "../../Store/Store";
-
+import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 export default function RegisterScreen() {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [userDetails, setUserDetails] = useState({
+        name: "",
+        phone: "",
+        address: "",
+        coordinates: {
+            mech_lat: "",
+            mech_long: "",
+        },
+        location: "",
+    });
 
-    async function Register() {
-        if (email == "" || username == "" || password == "") {
-            showNotification("Please,fill the form properly");
-            return;
-        } else {
-            setLoading(true);
+    useEffect(() => {
+        // initPageLoadEvents();
+    }, []);
+    async function getUserCoordinates() {
+        let returnObj = "";
+
+        const hasPermission = await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        console.log(hasPermission);
+        if (hasPermission) {
             try {
-                const data = await API_CALL(
-                    {
-                        url: `/api/teacher/register?username=${username}&email=${email}&password=${password}`,
-                        method: "post",
-                    },
-                    {type: "WEB"}
-                );
-                // console.log("data.data", data.data)
-                console.log(data);
-                if (data.status == "success") {
-                    setLoading(false);
-                    let authState = "true";
-                    showNotification("Registered Successfully");
-
-                    storeData("authState", authState);
-                    storeData("teacherId", data.teacher_id);
-                    storeData("userName", data.username);
-
-                    Store.setTeacherIdVal(data.teacher_id);
-                    Store.setUsernameVal(data.username);
-                    Store.setAuthTokenVal(1);
+                const data = await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+                    interval: 10000,
+                    fastInterval: 5000,
+                });
+                if (data) {
+                    try {
+                        const location = await GetLocation.getCurrentPosition({
+                            enableHighAccuracy: false,
+                            timeout: 15000,
+                        });
+                        returnObj = location;
+                    } catch (error) {
+                        const {code, message} = error;
+                        console.log(code, message);
+                    }
                 }
             } catch (error) {
-                showNotification("Error Occurred");
                 console.log(error);
+                showNotification("Error,Enable GPS");
+                return;
+            }
+        } else {
+            showNotification("Permissions Denied");
+        }
+        return returnObj;
+    }
+    async function Register() {
+        const data = await getUserCoordinates();
+        console.log("FINAL", data);
+
+        if (data) {
+            if (
+                (userDetails.name == "") |
+                (userDetails.phone == "") |
+                (userDetails.address == "") |
+                (userDetails.location == "")
+            ) {
+                showNotification("Please,fill the form properly");
+                return;
+            } else {
+                let obj = userDetails;
+                obj.coordinates.mech_lat = data.latitude;
+                obj.coordinates.mech_long = data.longitude;
+                setUserDetails(obj);
+                setLoading(true);
+                // console.log(userDetails);
+                try {
+                    const data = await API_CALL(
+                        {
+                            url: `/api/register_mechanic`,
+                            method: "post",
+                            data: userDetails,
+                        },
+                        {type: "WEB"}
+                    );
+                    console.log("data.data", data);
+                    if (data.status) {
+                        setLoading(false);
+                        showNotification(data.message);
+                        let authState = "true";
+                        storeData("authState", authState);
+                        Store.setRegUserDetails(data.data);
+                        Store.setAuthTokenVal(1);
+                    }
+                } catch (error) {
+                    showNotification("Error Occurred");
+                    console.log(error);
+                }
             }
         }
+        // if (email == '' || username == '' || password == '') {
+        //   showNotification('Please,fill the form properly');
+        //   return;
+        // } else {
+        //   setLoading(true);
+        //   try {
+        //     const data = await API_CALL(
+        //       {
+        //         url: `/api/teacher/register?username=${username}&email=${email}&password=${password}`,
+        //         method: 'post',
+        //       },
+        //       {type: 'WEB'},
+        //     );
+        //     // console.log("data.data", data.data)
+        //     console.log(data);
+        //     if (data.status == 'success') {
+        //       setLoading(false);
+        //       let authState = 'true';
+        //       showNotification('Registered Successfully');
+
+        //       storeData('authState', authState);
+        //       storeData('teacherId', data.teacher_id);
+        //       storeData('userName', data.username);
+
+        //       Store.setTeacherIdVal(data.teacher_id);
+        //       Store.setUsernameVal(data.username);
+        //       Store.setAuthTokenVal(1);
+        //     }
+        //   } catch (error) {
+        //     showNotification('Error Occurred');
+        //     console.log(error);
+        //   }
+        // }
     }
     return loading ? (
         <>
@@ -82,7 +177,7 @@ export default function RegisterScreen() {
         >
             <FocusAwareStatusBar backgroundColor={COLORS.HEADER_GREY} />
             <View style={styles.container1}>
-                <Image
+                {/* <Image
                     source={require("../../Assets/Images/logo.png")}
                     style={{
                         width: wp(80),
@@ -90,41 +185,112 @@ export default function RegisterScreen() {
                         marginTop: 50,
                         resizeMode: "contain",
                     }}
-                />
+                /> */}
             </View>
             <View style={styles.container2}>
                 <Input
-                    Title="Email"
-                    placeholder="Enter your Email"
+                    Title="Name"
+                    placeholder="Enter your Name"
                     style={{marginTop: hp(3)}}
-                    iconName={"email"}
-                    defaultValue={email}
-                    onChangeText={txt => {
-                        setEmail(txt);
-                    }}
-                />
-                <Input
-                    Title="Username"
-                    placeholder="Set a username"
-                    style={{marginTop: hp(2)}}
                     iconName={"account-box"}
-                    defaultValue={username}
+                    defaultValue={userDetails.name}
                     onChangeText={txt => {
-                        setUsername(txt);
+                        let obj = userDetails;
+                        obj.name = txt;
+                        setUserDetails(obj);
                     }}
                 />
                 <Input
-                    Title="Password"
-                    placeholder="Enter your Password"
+                    Title="Phone Number"
+                    placeholder="Enter your phone number"
                     style={{marginTop: hp(2)}}
-                    secureTextEntry={true}
-                    iconName={"lock"}
-                    defaultValue={password}
+                    iconName={"local-phone"}
+                    keyboardType={"phone-pad"}
+                    defaultValue={userDetails.phone}
                     onChangeText={txt => {
-                        setPassword(txt);
+                        let obj = userDetails;
+                        obj.phone = txt;
+                        setUserDetails(obj);
                     }}
                 />
+                <Input
+                    Title="Address"
+                    placeholder="Enter your Address"
+                    style={{marginTop: hp(2)}}
+                    height={100}
+                    textAlignVertical={"top"}
+                    iconName={"home-repair-service"}
+                    defaultValue={userDetails.address}
+                    onChangeText={txt => {
+                        let obj = userDetails;
+                        obj.address = txt;
+                        setUserDetails(obj);
+                    }}
+                />
+                <Input
+                    Title="Landmark"
+                    placeholder="Enter Landmark"
+                    style={{marginTop: hp(2)}}
+                    height={100}
+                    textAlignVertical={"top"}
+                    iconName={"home-repair-service"}
+                    defaultValue={userDetails.location}
+                    onChangeText={txt => {
+                        let obj = userDetails;
+                        obj.location = txt;
+                        setUserDetails(obj);
+                    }}
+                />
+                <View
+                    style={{
+                        marginTop: "14%",
+                        alignSelf: "flex-start",
+                        marginLeft: "3.8%",
+                    }}
+                >
+                    {/* <View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <MaterialIcons
+                name={'location-pin'}
+                size={26}
+                color={COLORS.PURPLE}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Montserrat-Medium',
+                  color: COLORS.PURPLE,
+                  fontSize: 18,
+                  marginLeft: '1%',
+                }}>
+                {'Select Location'}
+              </Text>
             </View>
+            <View style={{marginTop: '2.2%'}}>
+              <TouchableOpacity
+                style={{
+                  borderWidth: 1,
+
+                  width: wp(90),
+                  borderWidth: 1,
+                  height: 50,
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                }}>
+                <Text
+                  style={{
+                    color: 'grey',
+                    textAlignVertical: 'center',
+                    paddingLeft: '2.8%',
+                    marginBottom: '0.5%',
+                  }}>
+                  Select Location
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View> */}
+                </View>
+            </View>
+
             <View style={styles.container3}>
                 <TouchableOpacity
                     style={{

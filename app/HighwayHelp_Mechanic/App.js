@@ -39,7 +39,7 @@ function App() {
     <Observer>
       {() => (
         <NavigationContainer>
-          {Store.authTokenVal != 0 ? <AuthStackNavigator /> : <BottomTab />}
+          {Store.authTokenVal == 0 ? <AuthStackNavigator /> : <BottomTab />}
         </NavigationContainer>
       )}
     </Observer>

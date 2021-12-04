@@ -81,14 +81,14 @@ export default function LoginScreen() {
     <View style={styles.mainContainer}>
       <FocusAwareStatusBar backgroundColor={COLORS.HEADER_GREY} />
       <View style={styles.container1}>
-        <Image
+        {/* <Image
           source={require('../../Assets/Images/logo.png')}
           style={{
             width: wp(80),
             height: hp(10),
             resizeMode: 'contain',
           }}
-        />
+        /> */}
       </View>
       <View style={styles.container2}>
         <Input
