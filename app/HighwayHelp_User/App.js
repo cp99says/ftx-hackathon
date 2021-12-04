@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home'
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native'
 import Service from './src/screens/Service';
+import SplashScreen from 'react-native-splash-screen'
 
 
 export default function App() {
@@ -12,7 +13,7 @@ export default function App() {
   let authorized = PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_SMS);
 
   useEffect(() => {
-    //SplashScreen.hide();
+    SplashScreen.hide();
   }, [])
 
 
