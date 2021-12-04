@@ -116,7 +116,11 @@ export default function RegisterScreen() {
                         setLoading(false);
                         showNotification(data.message);
                         let authState = "true";
+                        let mech_data = JSON.stringify(data.data);
                         storeData("authState", authState);
+                        storeData("mechID", data.data.mechanic_id);
+                        storeData("mechData", mech_data);
+
                         Store.setRegUserDetails(data.data);
                         Store.setAuthTokenVal(1);
                     }
@@ -227,20 +231,22 @@ export default function RegisterScreen() {
                         setUserDetails(obj);
                     }}
                 />
-                <Input
-                    Title="Landmark"
-                    placeholder="Enter Landmark"
-                    style={{marginTop: hp(2)}}
-                    height={100}
-                    textAlignVertical={"top"}
-                    iconName={"home-repair-service"}
-                    defaultValue={userDetails.location}
-                    onChangeText={txt => {
-                        let obj = userDetails;
-                        obj.location = txt;
-                        setUserDetails(obj);
-                    }}
-                />
+                <View style={{marginTop: "10%"}}>
+                    <Input
+                        Title="Landmark"
+                        placeholder="Enter Landmark"
+                        style={{marginTop: hp(2)}}
+                        height={100}
+                        textAlignVertical={"top"}
+                        iconName={"home-repair-service"}
+                        defaultValue={userDetails.location}
+                        onChangeText={txt => {
+                            let obj = userDetails;
+                            obj.location = txt;
+                            setUserDetails(obj);
+                        }}
+                    />
+                </View>
                 <View
                     style={{
                         marginTop: "14%",
