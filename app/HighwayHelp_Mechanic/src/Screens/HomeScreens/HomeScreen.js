@@ -30,6 +30,7 @@ import {
 import {API_CALL} from "../../Functions/ApiFunctions";
 import {Loader} from "../../Components/Components";
 import Store from "../../Store/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("screen").height;
@@ -38,41 +39,30 @@ const HomeScreen = ({navigation}) => {
     const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
     const [fadeAnimationImage, setFadeAnimationImage] = useState(new Animated.Value(0));
     const [isModalVisible, setModalVisible] = useState(false);
-    const [questionCount, setquestionCount] = useState("");
-    const [subjectName, setSubjectName] = useState("");
-    const [topicName, setTopicName] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const requestCameraPermission = async () => {
-        let status = false;
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: "Cool Photo App Camera Permission",
-                    message:
-                        "Cool Photo App needs access to your camera " +
-                        "so you can take awesome pictures.",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK",
-                }
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                // console.log("You can use the camera");
-                status = true;
-            } else {
-                console.log("Camera permission denied");
-            }
-        } catch (err) {
-            console.warn(err);
-        }
-        return status;
-    };
     useEffect(() => {
         fadeIn();
+        fetchActiveRequests();
     }, []);
+    async function fetchActiveRequests() {
+        console.log(Store.mechIdVal);
+        try {
+            const data = await API_CALL(
+                {
+                    url: `/api/getMechanicDataById/${Store.mechIdVal}`,
+                    method: "get",
+                },
+                {type: "WEB"}
+            );
+            console.log("data.data", JSON.stringify(data.data[0].active_requests));
+            setData(data.data[0].active_requests);
+        } catch (error) {
+            showNotification("Error Occurred");
+            console.log(error);
+        }
+    }
     const fadeIn = () => {
         Animated.timing(fadeAnimation, {
             toValue: 1,
@@ -86,27 +76,37 @@ const HomeScreen = ({navigation}) => {
         }).start();
     };
 
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
-    let data = [
-        {
-            id: 1,
-            name: "Demo User",
-            phone: "9845698523",
-            vehicle_type: "Suv ",
-            location: "HYD",
-            serviceType: "Repair",
-        },
-        {
-            id: 2,
-            name: "Demo User1",
-            phone: "8741236548",
-            vehicle_type: "MG Hector",
-            location: "Delhi",
-            sericeType: "Repair",
-        },
-    ];
+    // let data = [
+    //     {
+    //         id: 1,
+    //         name: "Demo User",
+    //         phone: "9845698523",
+    //         vehicle_type: "Suv ",
+    //         location: "HYD",
+    //         serviceType: "Repair",
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Demo User1",
+    //         phone: "8741236548",
+    //         vehicle_type: "MG Hector",
+    //         location: "Delhi",
+    //         serviceType: "Repair",
+    //     },
+    // ];
+    // let data1 = [
+    //     {
+    //         wheelsAndTyres: {request_type: ["Break fail", "Miss alignment"]},
+    //         engine: {request_type: []},
+    //         fuel: {request_type: []},
+    //         name: "name",
+    //         phone: "78",
+    //         vehicle_type: ["car"],
+    //         location: "near petrol pump",
+    //         service_active: true,
+    //         _id: "61ab3e2ebae3577d9891a9ce",
+    //     },
+    // ];
     function renderItem({item}) {
         return (
             <View style={{marginVertical: "2.8%", alignSelf: "center"}}>
@@ -135,10 +135,16 @@ const HomeScreen = ({navigation}) => {
                         }}
                     />
                     <MaterialCommunityIcons
-                        name={"bell-outline"}
+                        name={"logout"}
                         size={32}
                         style={{marginRight: "6%"}}
                         color={COLORS.PURPLE}
+                        onPress={() => {
+                            AsyncStorage.clear();
+                            Store.setAuthTokenVal(0);
+                            Store.setMechIdVal("");
+                            Store.setRegUserDetails("");
+                        }}
                     />
                 </View>
                 <View style={{marginLeft: "4%", marginTop: -100}}>
@@ -173,7 +179,7 @@ const HomeScreen = ({navigation}) => {
                     data={data}
                     contentContainerStyle={{paddingBottom: "25%"}}
                     renderItem={renderItem}
-                    keyExtractor={e => e.id}
+                    keyExtractor={e => e._id}
                 />
             </View>
         </View>

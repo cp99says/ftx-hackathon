@@ -4,7 +4,7 @@ class Store {
     email = "";
     regUserDetails = "";
     usernameVal = "";
-    teacherIdVal = "";
+    mechIdVal = "";
     authTokenVal = 0;
 
     constructor() {
@@ -22,8 +22,8 @@ class Store {
     setUsernameVal(val) {
         this.usernameVal = val;
     }
-    setTeacherIdVal(val) {
-        this.teacherIdVal = val;
+    setMechIdVal(val) {
+        this.mechIdVal = val;
     }
 }
 export default new Store();
