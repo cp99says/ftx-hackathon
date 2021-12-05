@@ -63,7 +63,8 @@ exports.add_service = async (req, res) => {
         $push: {
           active_requests: req.body.request,
         },
-      },{new:true}
+      },
+      { new: true }
     );
     res.json({
       data,
@@ -73,11 +74,27 @@ exports.add_service = async (req, res) => {
   }
 };
 
-exports.set_service_false = async(req,res)=>{
+exports.set_service_false = async (req, res) => {
+  let mechID = req.body.mechID;
+  let serviceID = req.body.serviceID;
+
   try {
-    const data = await mechanic_model.findOneAndUpdate({"active_requests._id":"61acff27f83e386a80e9059c"},{service_active:false})
-    res.json({data})
+    const mechData = await mechanic_model.findOne({
+      mechanic_id: mechID,
+    });
+    let resData = mechData.active_requests.filter((data) => {
+      return data._id == serviceID;
+    });
+    const id = resData[0]._id;
+    const updatedData = {
+      "active_requests.$.service_active": false,
+    };
+    const valData = await mechanic_model.updateOne(
+      { "active_requests._id": id },
+      { $set: updatedData }
+    );
+    res.json({ valData });
   } catch (error) {
-    res.json({error})
+    res.json({ error });
   }
-}
+};
