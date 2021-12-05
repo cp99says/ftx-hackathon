@@ -10,9 +10,9 @@ import { height, width } from '../const/const';
 
 export default Home = ({ navigation }) => {
 
-    let data = [{ image: `https://source.unsplash.com/random/300x200?sig=${Math.random()}`, name: 'BMW', desc: 'abc def', _id: 1 },
-    { image: `https://source.unsplash.com/random/300x200?sig=${Math.random()}`, name: 'BMW', desc: 'abc def', _id: 2 },
-    { image: `https://source.unsplash.com/random/300x200?sig=${Math.random()}`, name: 'BMW', desc: 'abc def', _id: 3 }]
+    let data = [{ image: require('../assets/bmw.jpg'), name: 'BMW', desc: 'abc def', _id: 1 },
+    { image: require('../assets/bmw1.jpg'), name: 'BMW', desc: 'abc def', _id: 2 },
+    { image: require('../assets/bmw2.jpg'), name: 'BMW', desc: 'abc def', _id: 3 }]
 
 
 
@@ -23,7 +23,7 @@ export default Home = ({ navigation }) => {
                     style={{
                         height: wp("20%"), width: wp("20%"), borderRadius: wp("20%"), margin: width / 20
                     }}
-                    source={{ uri: `https://source.unsplash.com/random/300x200?sig=${Math.random()}` }} />
+                    source={require('../assets/user.jpg')} />
                 <View style={{ flexDirection: 'column' }}>
                     <Text style={{ fontFamily: 'Comfortaa-Bold', fontSize: 20, color: '#000' }}>Hey! Raghav</Text>
                     <Text style={{ fontFamily: 'Comfortaa-Regular', color: '#8d8484', fontSize: 13 }}>Which car needs our help?</Text>
@@ -35,7 +35,7 @@ export default Home = ({ navigation }) => {
                 renderItem={({ item }) => (<View>
                     <Image
                         style={{ width: width - 70, height: hp("40%"), borderRadius: 10, marginLeft: 20, }}
-                        source={{ uri: item.image }} />
+                        source={item.image} />
                     <Text
                         style={{ fontFamily: 'Comfortaa-Regular', color: '#000', fontSize: 18, marginTop: 10, marginLeft: 25 }}>{item.name}
                     </Text>

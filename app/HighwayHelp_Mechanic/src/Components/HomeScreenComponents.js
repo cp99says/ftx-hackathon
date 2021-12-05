@@ -8,6 +8,7 @@ import {
     ImageBackground,
     Animated,
     Image,
+    Linking,
     TouchableOpacity,
 } from "react-native";
 import {COLORS} from "../Constants/GlobalStyle";
@@ -16,9 +17,27 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
+import SendSMS from "react-native-sms";
+import Store from "../Store/Store";
+import {showNotification} from "../Functions/AppFunctions";
+
 export function TicketCard(props) {
-    console.log(props);
-    const {name, phone, vehicle_type, serviceType} = props.data;
+    const {name, phone, vehicle_type, serviceType, location, coordinates} = props.data;
+
+    const [active, setActive] = useState(true);
+    function senSMSConfirmation(userphone, mechPhone) {
+        SendSMS.send(
+            {
+                body: `Your Request is accepted,You can contact me at ${mechPhone}`,
+                recipients: [`${userphone}`],
+                successTypes: ["sent", "queued"],
+                allowAndroidSendWithoutReadPermission: true,
+            },
+            (completed, error) => {
+                setActive(false);
+            }
+        );
+    }
     return (
         <TouchableOpacity style={styles.cardContainer} disabled={true}>
             <View
@@ -64,12 +83,12 @@ export function TicketCard(props) {
             >
                 <View style={{alignItems: "center"}}>
                     <Text style={{fontSize: 18}}>Service</Text>
-                    <Text>{serviceType}</Text>
+                    <Text>Repair</Text>
                 </View>
 
                 <View style={{alignItems: "center"}}>
                     <Text style={{fontSize: 18}}>Vehicle </Text>
-                    <Text>{vehicle_type}</Text>
+                    <Text>{vehicle_type[0]}</Text>
                 </View>
             </View>
             <View
@@ -82,13 +101,19 @@ export function TicketCard(props) {
                     backgroundColor: "#cccccc",
                 }}
             />
-            <View
+            <TouchableOpacity
                 style={{
                     marginLeft: "5%",
                     marginTop: "5%",
                     flexDirection: "row",
                     alignItems: "center",
                     width: wp(70),
+                }}
+                onPress={() => {
+                    console.log(coordinates);
+                    Linking.openURL(
+                        `https://maps.google.com/?q=${coordinates.user_lat},${coordinates.user_long}`
+                    );
                 }}
             >
                 <Image
@@ -98,17 +123,18 @@ export function TicketCard(props) {
                         width: 40,
                     }}
                 />
-                <Text style={{marginLeft: "5%"}}>
-                    606-3727 Ullamcorper. Street Roseville NH 11523
-                </Text>
-            </View>
-            <View
+                <Text style={{marginLeft: "5%"}}>{location}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
                 style={{
                     marginLeft: "5%",
                     marginTop: "5%",
                     flexDirection: "row",
                     alignItems: "center",
                     width: wp(70),
+                }}
+                onPress={() => {
+                    Linking.openURL(`tel:${phone}`);
                 }}
             >
                 <Image
@@ -119,43 +145,75 @@ export function TicketCard(props) {
                     }}
                 />
                 <Text style={{marginLeft: "5%"}}>+91 {phone}</Text>
-            </View>
-            <View
-                style={{
-                    alignItems: "center",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                    marginTop: "5%",
-                }}
-            >
-                <TouchableOpacity
+            </TouchableOpacity>
+            {active ? (
+                <View
                     style={{
-                        backgroundColor: "#e5e5e5",
-                        width: "40%",
-                        paddingVertical: "3.2%",
-                        borderRadius: 6,
-                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        marginTop: "5%",
                     }}
                 >
-                    <Text style={{textAlign: "center", fontSize: 18, color: "#858585"}}>
-                        Decline
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{
-                        backgroundColor: "#4db862",
-                        width: "40%",
-                        paddingVertical: "3.2%",
-                        borderRadius: 6,
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: "#e5e5e5",
+                            width: "40%",
+                            paddingVertical: "3.2%",
+                            borderRadius: 6,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{textAlign: "center", fontSize: 18, color: "#858585"}}>
+                            Decline
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: "#4db862",
+                            width: "40%",
+                            paddingVertical: "3.2%",
+                            borderRadius: 6,
 
-                        justifyContent: "center",
+                            justifyContent: "center",
+                        }}
+                        onPress={() => {
+                            senSMSConfirmation(phone, Store.regUserDetails.phone);
+                        }}
+                    >
+                        <Text style={{textAlign: "center", fontSize: 18, color: "#c8f1d0"}}>
+                            Accept
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <View
+                    style={{
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        marginTop: "5%",
                     }}
                 >
-                    <Text style={{textAlign: "center", fontSize: 18, color: "#c8f1d0"}}>
-                        Accept
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: "#4db862",
+                            width: "40%",
+                            paddingVertical: "3.2%",
+                            borderRadius: 6,
+
+                            justifyContent: "center",
+                        }}
+                        onPress={() => {
+                            showNotification("Request Accepted");
+                        }}
+                    >
+                        <Text style={{textAlign: "center", fontSize: 18, color: "#c8f1d0"}}>
+                            Accepted
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </TouchableOpacity>
     );
 }

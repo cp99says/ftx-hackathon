@@ -1,4 +1,6 @@
 <div align="center"> 
+  <img src="media/logo.png" />
+  <br><br>
   <p align='center'> 
    <img src="https://img.shields.io/badge/Name%20-%20Highway%20Help-indigo?style=for-the-badge" />
    <img src="https://forthebadge.com/images/badges/built-with-love.svg" />
@@ -7,40 +9,37 @@
     <br>
    <!-- <img src="https://img.shields.io/badge/License-MIT-yellow.svg?logo=Microsoft%20Word&style=for-the-badge" /><br> -->
   </p>
-  <img src="media/logo.jpg" />
+ 
   <br><br>
   <p>
   <img src="https://img.shields.io/badge/Problem%20statement-lavenderblush?logo=Product%20Hunt&style=for-the-badge" height="55"/>
   </p>
-  <img src="media/p_statement.png" />
+<!--   <img src="media/p_statement.png" /> -->
   <br><br>
  </div>
- 
-
-
-
-  
 
  <div align="center"> 
     <p>
     <img src="https://img.shields.io/badge/Why%20%7C%20What%20it%20does-darkslategrey?logo=Windows%20Terminal&style=for-the-badge" height="55"/></p>
-    <img src="media/approach.png" />
+<!--     <img src="media/approach.png" /> -->
   <br><br>
  </div>
 
 <div align="center"> 
     <p>
     <img src="https://img.shields.io/badge/system%20architecture-moccasin?logo=Databricks&style=for-the-badge" height="55"/></p>
-    <img src="media/Sys_Arch.png" />
+<!--     <img src="media/Sys_Arch.png" /> -->
   <br><br>
  </div>
 
 
 <div align="center"> 
   <img src="https://img.shields.io/badge/Product%20Images-mediumseagreen?logo=Pinterest&style=for-the-badge" height="55" /><br><br>
-  <img src="media/mockup1.jpg" />
-  <img src="media/mockup2.jpg" />
-  <img src="media/mockup3.jpg" />
+  <p float="left">
+<!--     <img src="media/login.jpeg" width="220" />
+    <img src="media/app-dash.png" width="220" /> 
+    <img src="media/qp.png" width="220" /> -->
+  </p><br>
 </div>
 <br>
 
@@ -67,11 +66,11 @@
  ```
  Fork The Repository ✅
  
- $ git clone https://github.com/<username>/Team_Nodemon.git   
+ $ git clone https://github.com/<username>/ftx-hackathon.git   
 ```
 
   ```
- $ cd Team_Nodemon
+ $ cd ftx-hackathon
  ```
 
 #### Start the Python ML backend 🚀 :
@@ -145,7 +144,7 @@
   <div>
    <h3>API Documentation:</h3>
 
-  <a href="https://leap.swarnabha.tech/docs"> https://leap.swarnabha.tech/docs </a><br>
+<!--   <a href="https://leap.swarnabha.tech/docs"> https://leap.swarnabha.tech/docs </a><br> -->
   </div>
   
   #### Admin | Frontend
@@ -172,7 +171,7 @@
 
   <h3>API Documentation:</h3>
 
-  <a href="https://api.chetanpareek.tech/api-docs/"> https://api.chetanpareek.tech/api-docs/ </a><br>
+<!--   <a href="https://api.chetanpareek.tech/api-docs/"> https://api.chetanpareek.tech/api-docs/ </a><br> -->
 
   </div>
 
