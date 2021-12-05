@@ -54,3 +54,30 @@ exports.patch_mechanic_fcm_token = async (req, res) => {
     res.json({ error });
   }
 };
+
+exports.add_service = async (req, res) => {
+  try {
+    const data = await mechanic_model.updateOne(
+      { mechanic_id: req.body.mechanic_id },
+      {
+        $push: {
+          active_requests: req.body.request,
+        },
+      },{new:true}
+    );
+    res.json({
+      data,
+    });
+  } catch (error) {
+    res.json({ error });
+  }
+};
+
+exports.set_service_false = async(req,res)=>{
+  try {
+    const data = await mechanic_model.findOneAndUpdate({"active_requests._id":"61acff27f83e386a80e9059c"},{service_active:false})
+    res.json({data})
+  } catch (error) {
+    res.json({error})
+  }
+}
