@@ -4,6 +4,7 @@ const schema = mongoose.Schema({
   phone: { type: Number },
   user_id: { type: String, unique: true },
   address: { type: String },
+  fcm_token: { type: String },
 });
 
 module.exports = mongoose.model("User Profile", schema);

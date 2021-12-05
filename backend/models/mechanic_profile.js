@@ -9,6 +9,7 @@ const schema = mongoose.Schema({
   },
   mechanic_id: { type: String },
   location: { type: String },
+  fcm_token: { type: String },
   active_requests: [
     {
       name: { type: String },
