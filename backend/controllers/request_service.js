@@ -1,5 +1,6 @@
 const mechanic_model = require("./../models/mechanic_profile");
 const user_model = require("./../models/user");
+var axios = require("axios");
 
 exports.request_service = async (req, res) => {
   try {
@@ -75,10 +76,9 @@ exports.add_service = async (req, res) => {
 };
 
 exports.set_service_false = async (req, res) => {
-  let mechID = req.body.mechID;
-  let serviceID = req.body.serviceID;
-
   try {
+    let mechID = req.body.mechID;
+    let serviceID = req.body.serviceID;
     const mechData = await mechanic_model.findOne({
       mechanic_id: mechID,
     });
@@ -93,6 +93,33 @@ exports.set_service_false = async (req, res) => {
       { "active_requests._id": id },
       { $set: updatedData }
     );
+    // var data = JSON.stringify({
+    //   to: "foCWLGR4Rv-cv8eUGoWb6T:APA91bEzYzXwpoKSkd8EJuHsFE7CZiYeWsWiiVb7Z6i0lIz1H9QiHJ9ui7igdno0K-54ejqNe81-SvOPH7KdFKsKMuq58Mw3PLY1JaTLyq-zd6jXQ8OYGeNCJsVGoQoRfZujdbIUCRgc",
+    //   collapse_key: "type_a",
+    //   priority: "high",
+    //   notification: {
+    //     body: "New vehicle service request",
+    //     title: "New Service Request",
+    //   },
+    // });
+    // var config = {
+    //   method: "post",
+    //   url: "https://fcm.googleapis.com/fcm/send",
+    //   headers: {
+    //     Authorization:
+    //       "Bearer AAAAHAqavWU:APA91bE_-nY4MGn8Vx0YVDBQ6jKIwwlKri0IpXSgZFrwrXfRMJu-H_nHwDbsuB_aThRL7AwOY9WskNfFwGcf7-aoUWHcw5KDbMXIuanyWZL4SdlJgE2tF9pnKo-jbNwigDg_yK2GcXiN",
+    //     "Content-Type": "application/json",
+    //   },
+    //   data: data,
+    // };
+    // axios(config)
+    //   .then(function (response) {
+    //
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
     res.json({ valData });
   } catch (error) {
     res.json({ error });

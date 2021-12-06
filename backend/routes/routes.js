@@ -13,5 +13,5 @@ app
   .patch(request_service.patch_mechanic_fcm_token);
 
 app.route("/add_new_request").post(request_service.add_service);
-app.route("/set_service_false").patch(request_service.set_service_false)
+app.route("/set_service_false").patch(request_service.set_service_false);
 module.exports = app;

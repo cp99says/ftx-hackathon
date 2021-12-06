@@ -22,7 +22,7 @@ const schema = mongoose.Schema({
       },
       wheelsAndTyres: {
         request_type: [{ type: String }],
-      },
+      },      
       engine: {
         request_type: [{ type: String }],
       },
