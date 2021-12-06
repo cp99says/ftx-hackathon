@@ -92,6 +92,7 @@ import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import SendSMS from 'react-native-sms'
 import Home from './Home';
+import { showNotification } from '../const/const';
 
 const items = [
     { id: 1, name: 'Puncture' },
@@ -133,32 +134,34 @@ export default Service = ({ navigation }) => {
         store.setSelectedServices(select)
 
 
-        axios.patch('https://ftxapi.imswarnabha.in/api/request_service', {
+        axios.post('https://ftxapi.imswarnabha.in/api/add_new_request', {
+
             mechanic_id: "2086e1ebce",
-            active_requests: [
-                {
-                    name: "Raghav",
-                    phone: "8102644366",
-                    vehicle_type: ["car"],
-                    location: "near petrol pump",
-                    coordinates: {
-                        mech_lat: lat,
-                        mech_long: long
-                    },
-                    wheelsAndTyres: {
-                        request_type: selectedItemsWheels
-                    },
-                    engine: {
-                        request_type: selectedItemsEngine,
-                    },
-                    fuel: {
-                        request_type: selecteditemsFuel,
-                    },
-                }
-            ]
+            request:
+            {
+                name: "Raghav",
+                phone: "8102644366",
+                vehicle_type: [store.vehicleType],
+                location: "near petrol pump",
+                coordinates: {
+                    user_lat: lat,
+                    user_long: long
+                },
+                wheelsAndTyres: {
+                    request_type: selectedItemsWheels
+                },
+                engine: {
+                    request_type: selectedItemsEngine,
+                },
+                fuel: {
+                    request_type: selecteditemsFuel,
+                },
+            }
+
+
         }).then((val) => {
             console.log(val.data)
-            alert(val.data.message)
+            showNotification("Request sent Successfully")
         }).catch((err) => {
             console.log(err)
             alert(err)
@@ -178,6 +181,7 @@ export default Service = ({ navigation }) => {
     }
 
     useEffect(() => {
+        console.log(store.vehicleType)
         Geolocation.getCurrentPosition(data => {
             console.log("hettttt", data)
             setLat(data.coords.latitude)
@@ -190,9 +194,9 @@ export default Service = ({ navigation }) => {
         <ScrollView style={styles.container}>
             <SafeAreaView>
                 <Text style={styles.titleText}>
-                    How can we help?
+                    How can we help you?
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10 }}>
                     <Image
                         style={{ height: hp("6%"), width: hp("6%"), marginLeft: 10 }}
                         source={require('../assets/image2.png')} />
@@ -205,7 +209,8 @@ export default Service = ({ navigation }) => {
                     uniqueKey="name"
                     onSelectedItemsChange={onSelectedItemsChange}
                     selectedItems={selectedItemsWheels}
-                    selectText="Select problem"
+
+                    selectText="  Select problem"
                     searchInputPlaceholderText="Search Items..."
                     onChangeInput={(text) => console.log(text)}
                     tagRemoveIconColor="red"
@@ -231,7 +236,7 @@ export default Service = ({ navigation }) => {
                     uniqueKey='name'
                     onSelectedItemsChange={onSelectEngine}
                     selectedItems={selectedItemsEngine}
-                    selectText="Select problem"
+                    selectText="  Select problem"
                     searchInputPlaceholderText="Search Items..."
                     onChangeInput={(text) => console.log(text)}
                     tagRemoveIconColor="red"
@@ -257,7 +262,7 @@ export default Service = ({ navigation }) => {
                     uniqueKey='name'
                     onSelectedItemsChange={onSelectFuel}
                     selectedItems={selecteditemsFuel}
-                    selectText="Select problem"
+                    selectText="  Select problem"
                     searchInputPlaceholderText="Search Items..."
                     onChangeInput={(text) => console.log(text)}
                     tagRemoveIconColor="red"
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         padding: 8,
-        fontSize: 30,
+        fontSize: 28,
         color: '#000',
         textAlign: 'center',
         fontFamily: 'Comfortaa-Bold'

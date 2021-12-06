@@ -18,6 +18,8 @@ target 'HighwayHelp_User' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
   target 'HighwayHelp_UserTests' do
     inherit! :complete
     # Pods for testing
