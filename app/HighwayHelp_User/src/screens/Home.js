@@ -17,7 +17,7 @@ export default Home = ({ navigation }) => {
 
 
     return (
-        <View style={{ backgroundColor: '#ffffff' }}>
+        <View style={{ backgroundColor: '#f6feff' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image
                     style={{
@@ -57,7 +57,7 @@ export default Home = ({ navigation }) => {
             </View>
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('Service')
+                    navigation.navigate('Type')
                 }}
                 style={{ borderRadius: 10, marginTop: 30, marginBottom: 100, alignSelf: 'center', backgroundColor: '#ff3f3f', width: wp("80%"), height: hp("8%"), justifyContent: 'center' }}>
                 <Text style={{ textAlign: 'center', color: '#fff', fontFamily: 'Comfortaa-Bold', fontSize: 18 }}>

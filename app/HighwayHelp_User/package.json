@@ -29,6 +29,8 @@
     "@babel/plugin-proposal-decorators": "^7.15.4",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "@react-native-community/geolocation": "^2.0.2",
+    "@react-native-firebase/app": "^13.1.0",
+    "@react-native-firebase/messaging": "^13.1.0",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
     "axios": "^0.24.0",
