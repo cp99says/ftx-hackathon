@@ -74,7 +74,35 @@ exports.add_service = async (req, res) => {
     res.json({ error });
   }
 };
+async function sendNotification(token) {
+  var data = JSON.stringify({
+    to: token,
+    collapse_key: "type_a",
+    priority: "high",
+    notification: {
+      body: "New vehicle service request",
+      title: "New Service Request",
+    },
+  });
+  var config = {
+    method: "post",
+    url: "https://fcm.googleapis.com/fcm/send",
+    headers: {
+      Authorization:
+        "Bearer AAAAHAqavWU:APA91bE_-nY4MGn8Vx0YVDBQ6jKIwwlKri0IpXSgZFrwrXfRMJu-H_nHwDbsuB_aThRL7AwOY9WskNfFwGcf7-aoUWHcw5KDbMXIuanyWZL4SdlJgE2tF9pnKo-jbNwigDg_yK2GcXiN",
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
 
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 exports.set_service_false = async (req, res) => {
   try {
     let mechID = req.body.mechID;
@@ -82,6 +110,7 @@ exports.set_service_false = async (req, res) => {
     const mechData = await mechanic_model.findOne({
       mechanic_id: mechID,
     });
+
     let resData = mechData.active_requests.filter((data) => {
       return data._id == serviceID;
     });
@@ -93,33 +122,8 @@ exports.set_service_false = async (req, res) => {
       { "active_requests._id": id },
       { $set: updatedData }
     );
-    // var data = JSON.stringify({
-    //   to: "foCWLGR4Rv-cv8eUGoWb6T:APA91bEzYzXwpoKSkd8EJuHsFE7CZiYeWsWiiVb7Z6i0lIz1H9QiHJ9ui7igdno0K-54ejqNe81-SvOPH7KdFKsKMuq58Mw3PLY1JaTLyq-zd6jXQ8OYGeNCJsVGoQoRfZujdbIUCRgc",
-    //   collapse_key: "type_a",
-    //   priority: "high",
-    //   notification: {
-    //     body: "New vehicle service request",
-    //     title: "New Service Request",
-    //   },
-    // });
-    // var config = {
-    //   method: "post",
-    //   url: "https://fcm.googleapis.com/fcm/send",
-    //   headers: {
-    //     Authorization:
-    //       "Bearer AAAAHAqavWU:APA91bE_-nY4MGn8Vx0YVDBQ6jKIwwlKri0IpXSgZFrwrXfRMJu-H_nHwDbsuB_aThRL7AwOY9WskNfFwGcf7-aoUWHcw5KDbMXIuanyWZL4SdlJgE2tF9pnKo-jbNwigDg_yK2GcXiN",
-    //     "Content-Type": "application/json",
-    //   },
-    //   data: data,
-    // };
-    // axios(config)
-    //   .then(function (response) {
-    //
-    //     console.log(JSON.stringify(response.data));
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+
+    sendNotification(mechData.fcm_token);
     res.json({ valData });
   } catch (error) {
     res.json({ error });
