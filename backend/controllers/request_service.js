@@ -123,7 +123,7 @@ exports.set_service_false = async (req, res) => {
       { $set: updatedData }
     );
 
-    sendNotification(mechData.fcm_token);
+    // sendNotification(mechData.fcm_token);
     res.json({ valData });
   } catch (error) {
     res.json({ error });
